@@ -1,4 +1,4 @@
-module awscsdk [system] {
+module Cawssdk [system] {
   header "/usr/local/include/awscsdk/awscsdk.h"
   link "awscsdk"
   export *
