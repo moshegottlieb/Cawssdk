@@ -12,8 +12,6 @@
 
 using namespace Aws::SQS;
 
-extern "C" AWSErrorPolicy SQSDeleteMessage(AWSObjectRef object,const char* queueUrl, const char* handle,AWSResult* result); 
-
 extern "C" AWSObjectRef SQSCreate(const char* accessKeyId,const char* secretKey,AWSResult* result){
     Aws::Auth::AWSCredentials credentials(accessKeyId, secretKey);
     SQSClient* sqs = new Aws::SQS::SQSClient(credentials);
