@@ -1,0 +1,5 @@
+module awscsdk [system] {
+  header "awscsdk.h"
+  link "awscsdk"
+  export *
+}
