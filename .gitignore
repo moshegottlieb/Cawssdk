@@ -5,6 +5,7 @@ import.db
 cache.db
 cache/*
 awscsdk.h
+.build
 
 *.DS_Store
 .AppleDouble
