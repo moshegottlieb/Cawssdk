@@ -11,7 +11,7 @@ AWSErrorPolicy SQSSendMessage(AWSObjectRef object, const char* queueUrl, const c
 
 typedef int (*SQSMessageReceivedCallback)(void* ctx,const char* id,const char* message,const char* receipt);
 AWSErrorPolicy SQSReceiveMessages(AWSObjectRef object, const char* queueUrl,int maxBatch,int timeoutSeconds,void* context,SQSMessageReceivedCallback handler,AWSResult* result);
-extern "C" AWSErrorPolicy SQSDeleteMessage(AWSObjectRef object,const char* queueUrl, const char* handle,AWSResult* result); 
+AWSErrorPolicy SQSDeleteMessage(AWSObjectRef object,const char* queueUrl, const char* handle,AWSResult* result); 
 
 
 #ifdef __cplusplus
