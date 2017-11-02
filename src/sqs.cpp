@@ -12,9 +12,14 @@
 
 using namespace Aws::SQS;
 
-extern "C" AWSObjectRef SQSCreate(const char* accessKeyId,const char* secretKey,AWSResult* result){
+extern "C" AWSObjectRef SQSCreate(const char* region,const char* accessKeyId,const char* secretKey,AWSResult* result){
+    assert(region);
+    assert(result);
     Aws::Auth::AWSCredentials credentials(accessKeyId, secretKey);
-    SQSClient* sqs = new Aws::SQS::SQSClient(credentials);
+    Aws::Client::ClientConfiguration config;
+    config.region = region;
+    SQSClient* sqs = new Aws::SQS::SQSClient(credentials,config);
+
     return aws_check_empty(sqs,*result);
 }
 

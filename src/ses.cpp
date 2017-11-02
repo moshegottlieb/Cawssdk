@@ -9,9 +9,13 @@
 
 using namespace Aws::SES;
 
-extern "C" AWSObjectRef SESCreate(const char* accessKeyId,const char* secretKey,AWSResult* result){
+extern "C" AWSObjectRef SESCreate(const char* region,const char* accessKeyId,const char* secretKey,AWSResult* result){
+    assert(region);
+    assert(result);
     Aws::Auth::AWSCredentials credentials(accessKeyId, secretKey);
-    SESClient* ses = new Aws::SES::SESClient(credentials);
+    Aws::Client::ClientConfiguration config;
+    config.region = region;
+    SESClient* ses = new Aws::SES::SESClient(credentials,config);
     return aws_check_empty(ses,*result);
 }
 

@@ -9,8 +9,11 @@
 
 using namespace Aws::S3;
 
-extern "C" AWSObjectRef S3ObjectCreate(const char* accessKeyId,const char* secretKey,AWSResult* result){
+extern "C" AWSObjectRef S3ObjectCreate(const char* region,const char* accessKeyId,const char* secretKey,AWSResult* result){
     assert(result);
+    assert(region);
+    Aws::Client::ClientConfiguration config;
+    config.region = region;
     Aws::Auth::AWSCredentials credentials(accessKeyId, secretKey);
     S3Client* s3 = new Aws::S3::S3Client(credentials);
     return aws_check_empty(s3,*result); 

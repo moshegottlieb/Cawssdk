@@ -5,7 +5,7 @@ extern "C" {
 
 #include "aws.h"
 
-AWSObjectRef SQSCreate(const char* accessKeyId,const char* secretKey,AWSResult* result);
+AWSObjectRef SQSCreate(const char* region,const char* accessKeyId,const char* secretKey,AWSResult* result);
 void SQSDestroy(AWSObjectRef object);
 AWSErrorPolicy SQSSendMessage(AWSObjectRef object, const char* queueUrl, const char* message,AWSResult* result);
 

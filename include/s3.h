@@ -6,7 +6,7 @@ extern "C" {
 
 #include "aws.h"
 
-AWSObjectRef S3ObjectCreate(const char* accessKeyId,const char* secretKey,AWSResult* result);
+AWSObjectRef S3ObjectCreate(const char* region,const char* accessKeyId,const char* secretKey,AWSResult* result);
 void S3ObjectDestroy(AWSObjectRef object);
 
 typedef struct S3ObjectDesc {
