@@ -76,3 +76,62 @@ extern "C" void S3ObjectDestroy(AWSObjectRef object){
     S3Client& s3 = aws_ref<S3Client>(object);
     delete &s3;
 }
+
+
+extern "C" void S3ObjectDescSetBucket(S3ObjectDesc* object, const char* value){
+    assert(object);
+    aws_strcpy(object->bucket,value);
+}
+extern "C" void S3ObjectDescSetKey(S3ObjectDesc* object, const char* value){
+    assert(object);
+    aws_strcpy(object->key,value);
+}
+extern "C" void S3ObjectDescSetRegion(S3ObjectDesc* object, const char* value){
+    assert(object);
+    aws_strcpy(object->region,value);
+}
+extern "C" void S3ObjectDescSetFilename(S3ObjectDesc* object, const char* value){
+    assert(object);
+    aws_strcpy(object->filename,value);
+}
+extern "C" void S3ObjectDescSetACL(S3ObjectDesc* object, const char* value){
+    assert(object);
+    aws_strcpy(object->acl,value);
+}
+extern "C" void S3ObjectDescSetStorageClass(S3ObjectDesc* object, const char* value){
+    assert(object);
+    aws_strcpy(object->storageClass,value);
+}
+extern "C" void S3ObjectDescSetCacheControl(S3ObjectDesc* object, const char* value){
+    assert(object);
+    aws_strcpy(object->cacheControl,value);
+}
+
+extern "C" const char* S3ObjectDescGetBucket(S3ObjectDesc* object){
+    assert(object);
+    return object->bucket;
+}
+extern "C" const char* S3ObjectDescGetKey(S3ObjectDesc* object){
+    assert(object);
+    return object->key;
+}
+extern "C" const char* S3ObjectDescGetRegion(S3ObjectDesc* object){
+    assert(object);
+    return object->region;
+}
+extern "C" const char* S3ObjectDescGetFilename(S3ObjectDesc* object){
+    assert(object);
+    return object->filename;
+}
+extern "C" const char* S3ObjectDescGetACL(S3ObjectDesc* object){
+    assert(object);
+    return object->acl;
+}
+extern "C" const char* S3ObjectDescGetStorageClass(S3ObjectDesc* object){
+    assert(object);
+    return object->storageClass;
+}
+extern "C" const char* S3ObjectDescGetCacheControl(S3ObjectDesc* object){
+    assert(object);
+    return object->cacheControl;
+}
