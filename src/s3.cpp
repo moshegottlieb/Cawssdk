@@ -15,7 +15,7 @@ extern "C" AWSObjectRef S3ObjectCreate(const char* region,const char* accessKeyI
     Aws::Client::ClientConfiguration config;
     config.region = region;
     Aws::Auth::AWSCredentials credentials(accessKeyId, secretKey);
-    S3Client* s3 = new Aws::S3::S3Client(credentials);
+    S3Client* s3 = new Aws::S3::S3Client(credentials,config);
     return aws_check_empty(s3,*result); 
 }
 
