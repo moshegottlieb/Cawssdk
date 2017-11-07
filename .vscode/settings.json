@@ -15,6 +15,13 @@
         "tuple": "cpp",
         "type_traits": "cpp",
         "utility": "cpp",
-        "locale": "cpp"
+        "locale": "cpp",
+        "__bit_reference": "cpp",
+        "algorithm": "cpp",
+        "atomic": "cpp",
+        "bitset": "cpp",
+        "iterator": "cpp",
+        "system_error": "cpp",
+        "vector": "cpp"
     }
 }

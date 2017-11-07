@@ -5,6 +5,8 @@ import.db
 cache.db
 cache/*
 .build
+aws-sdk-cpp.build/
+aws-sdk-cpp/
 
 *.DS_Store
 .AppleDouble

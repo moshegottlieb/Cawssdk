@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <cassert>
+#include <stdlib.h>
 
 using namespace Aws::S3;
 
@@ -19,32 +20,34 @@ extern "C" AWSObjectRef S3ObjectCreate(const char* region,const char* accessKeyI
     return aws_check_empty(s3,*result); 
 }
 
-extern "C" S3ObjectDesc* S3ObjectDescInit(S3ObjectDesc* od,const char* bucket,const char* key, const char* filename){
-    assert(od);
-    assert(bucket);
-    assert(key);
-    assert(filename);
+extern "C" S3ObjectDesc* S3ObjectDescCreate(){
+    S3ObjectDesc* od = (S3ObjectDesc*)malloc(sizeof(S3ObjectDesc));
     memset(od,0,sizeof(S3ObjectDesc));
-    aws_strcpy(od->bucket,bucket);
-    aws_strcpy(od->key,key);
-    aws_strcpy(od->filename,filename);
     return od;
 }
 
+#define S3ObjectDescFree(what) if (what) { free(what); what = NULL; }
 
-extern "C" AWSErrorPolicy S3ObjectPutFile(AWSObjectRef object, const char* bucket,const char* key,const char* file,AWSResult* result){
-    S3ObjectDesc desc;
-    S3ObjectDescInit(&desc,bucket,key,file);
-    return S3ObjectPut(object,&desc,result);
+extern "C" void S3ObjectDescDestroy(S3ObjectDesc* od){
+    if (od){
+        S3ObjectDescFree(od->acl);
+        S3ObjectDescFree(od->storageClass);
+        S3ObjectDescFree(od->cacheControl);
+        S3ObjectDescFree(od->contentType);
+        free(od);
+    }
 }
 
-extern "C" AWSErrorPolicy S3ObjectPut(AWSObjectRef object, S3ObjectDesc* desc,AWSResult* result){
+extern "C" AWSErrorPolicy S3ObjectPut(AWSObjectRef object,const char* filename,const char* bucket,const char* key, S3ObjectDesc* desc,AWSResult* result){
     assert(object);
     assert(desc);
     assert(result);
+    assert(filename);
+    assert(bucket);
+    assert(key);
     S3Client& s3 = aws_ref<S3Client>(object);
     Model::PutObjectRequest object_request;
-    object_request.WithBucket(desc->bucket).WithKey(desc->key);
+    object_request.WithBucket(bucket).WithKey(key);
     if (desc->acl[0]){
         object_request.SetACL(Model::ObjectCannedACLMapper::GetObjectCannedACLForName(desc->acl));
     }
@@ -54,9 +57,10 @@ extern "C" AWSErrorPolicy S3ObjectPut(AWSObjectRef object, S3ObjectDesc* desc,AW
     if (desc->cacheControl[0]){
         object_request.SetCacheControl(desc->cacheControl);
     }
+    object_request.SetContentType("image/png");
     // Binary files must also have the std::ios_base::bin flag or'ed in
     auto input_data = Aws::MakeShared<Aws::FStream>("PutObjectInputStream",
-        desc->filename, std::ios_base::in | std::ios_base::binary);
+        filename, std::ios_base::in | std::ios_base::binary);
     object_request.SetBody(input_data);
     auto outcome = s3.PutObject(object_request);
     return aws_result_assign_outcome(*result,outcome).policy;
@@ -77,61 +81,24 @@ extern "C" void S3ObjectDestroy(AWSObjectRef object){
     delete &s3;
 }
 
+extern "C" void S3ObjectDescSetContentType(S3ObjectDesc* object, const char* value){
+    assert(object);
+    S3ObjectDescFree(object->contentType);
+    if (value) object->contentType = strdup(value);
+}
 
-extern "C" void S3ObjectDescSetBucket(S3ObjectDesc* object, const char* value){
-    assert(object);
-    aws_strcpy(object->bucket,value);
-}
-extern "C" void S3ObjectDescSetKey(S3ObjectDesc* object, const char* value){
-    assert(object);
-    aws_strcpy(object->key,value);
-}
-extern "C" void S3ObjectDescSetRegion(S3ObjectDesc* object, const char* value){
-    assert(object);
-    aws_strcpy(object->region,value);
-}
-extern "C" void S3ObjectDescSetFilename(S3ObjectDesc* object, const char* value){
-    assert(object);
-    aws_strcpy(object->filename,value);
-}
 extern "C" void S3ObjectDescSetACL(S3ObjectDesc* object, const char* value){
     assert(object);
-    aws_strcpy(object->acl,value);
+    S3ObjectDescFree(object->acl);
+    if (value) object->acl = strdup(value);
 }
 extern "C" void S3ObjectDescSetStorageClass(S3ObjectDesc* object, const char* value){
     assert(object);
-    aws_strcpy(object->storageClass,value);
+    S3ObjectDescFree(object->storageClass);
+    if (value) object->storageClass = strdup(value);
 }
 extern "C" void S3ObjectDescSetCacheControl(S3ObjectDesc* object, const char* value){
     assert(object);
-    aws_strcpy(object->cacheControl,value);
-}
-
-extern "C" const char* S3ObjectDescGetBucket(S3ObjectDesc* object){
-    assert(object);
-    return object->bucket;
-}
-extern "C" const char* S3ObjectDescGetKey(S3ObjectDesc* object){
-    assert(object);
-    return object->key;
-}
-extern "C" const char* S3ObjectDescGetRegion(S3ObjectDesc* object){
-    assert(object);
-    return object->region;
-}
-extern "C" const char* S3ObjectDescGetFilename(S3ObjectDesc* object){
-    assert(object);
-    return object->filename;
-}
-extern "C" const char* S3ObjectDescGetACL(S3ObjectDesc* object){
-    assert(object);
-    return object->acl;
-}
-extern "C" const char* S3ObjectDescGetStorageClass(S3ObjectDesc* object){
-    assert(object);
-    return object->storageClass;
-}
-extern "C" const char* S3ObjectDescGetCacheControl(S3ObjectDesc* object){
-    assert(object);
-    return object->cacheControl;
+    S3ObjectDescFree(object->cacheControl);
+    if (value) object->cacheControl = strdup(value);
 }

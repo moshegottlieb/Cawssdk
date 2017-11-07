@@ -37,9 +37,14 @@ fi
 
 mkdir -p "${BUILD_DIR}" || exit $?
 cd "${BUILD_DIR}" || exit $?
-cmake -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DENABLE_TESTING=OFF -DBUILD_ONLY="${AWS_TARGETS}" "${SRC_ROOT}" || exit $?
+cmake -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DENABLE_TESTING=OFF -DBUILD_ONLY="${AWS_TARGETS}" "${SRC_ROOT}"
+RET=$?
+if [ "$?" != 0 ]; then
+	rm -rf "${BUILD_DIR}"
+	exit $RET
+fi
 make -j ${JOBS} || exit $?
 make install || exit $?
 cd ..
-rm -rf "${BUILD_DIR}" "${SRC_ROOT}"
+make clean
 make -j ${JOBS} install
