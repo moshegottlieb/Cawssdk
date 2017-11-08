@@ -54,4 +54,4 @@ clean:
 
 $(OBJ): $(BUILDDIR)/%.o : src/%.cpp
 		@echo [C++] $<
-		$(COMPILE.cpp) $(CFLAGS) $(OUTPUT_OPTION) $< 
+		@$(COMPILE.cpp) $(CFLAGS) $(OUTPUT_OPTION) $< 
