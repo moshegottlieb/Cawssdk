@@ -1,7 +1,6 @@
 SRCDIR = src
 TGT_PREFIX = lib
 TGT_NAME = awscsdk
-INSTALL_PREFIX ?= /usr/local
 UNAME_S := $(shell uname -s)
 CXXFLAGS+=-g -std=c++11 -Iinclude -I/usr/local/Iinclude
 LDFLAGS+=-L$(INSTALL_PREFIX)/lib
@@ -13,13 +12,15 @@ SOURCES = $(wildcard src/*.cpp)
 OBJ = $(subst /src,,$(patsubst %.cpp,$(BUILDDIR)/%.o,$(SOURCES)))
 
 ifeq ($(UNAME_S),Linux)
-	SO_SUFFIX=so
-	CFLAGS:= $(CFLAGS) -fPIC
-	LDFLAGS:= $(LDFLAGS) -shared 
+        SO_SUFFIX=so
+        CFLAGS:= $(CFLAGS) -fPIC
+        LDFLAGS:= $(LDFLAGS) -shared 
+        INSTALL_PREFIX=/usr
 endif
 ifeq ($(UNAME_S),Darwin)
-	SO_SUFFIX=dylib
-	LDFLAGS:= $(LDFLAGS) -dynamiclib
+        SO_SUFFIX=dylib
+        LDFLAGS:= $(LDFLAGS) -dynamiclib
+        INSTALL_PREFIX=/usr/local
 endif
 
 AWS_LIBS = $(wildcard $(INSTALL_PREFIX)/lib/libaws-cpp-sdk-*.$(SO_SUFFIX))
@@ -31,28 +32,27 @@ TARGET_LIB=$(TGT_PREFIX)$(TGT_NAME).$(SO_SUFFIX)
 TARGET = $(BUILDDIR)/$(TARGET_LIB)
 
 $(TARGET): $(OBJ)
-	@echo [LINK] $(TARGET_LIB)
-	@$(CXX) $(OBJ) -o $@ $(LDFLAGS) $(CXXFLAGS)
+        @echo [LINK] $(TARGET_LIB)
+        @$(CXX) $(OBJ) -o $@ $(LDFLAGS) $(CFLAGS) $(CXXFLAGS)
 
 install: $(TARGET)
-	@echo [INSTALL]	
-	@mkdir -p $(INSTALL_PREFIX)/include/$(TGT_NAME)
-	@cp include/*.h $(INSTALL_PREFIX)/include/$(TGT_NAME)/
-	@cp $(TARGET) $(INSTALL_PREFIX)/lib
+        @echo [INSTALL] 
+        @mkdir -p $(INSTALL_PREFIX)/include/$(TGT_NAME)
+        @cp include/*.h $(INSTALL_PREFIX)/include/$(TGT_NAME)/
+        @cp $(TARGET) $(INSTALL_PREFIX)/lib
 uninstall:
-	@echo [UNINSTALL]
-	@rm -rf $(INSTALL_PREFIX)/include/$(TGT_NAME)
-	@rm -f $(INSTALL_PREFIX)/lib/$(TARGET_LIB)
+        @echo [UNINSTALL]
+        @rm -rf $(INSTALL_PREFIX)/include/$(TGT_NAME)
+        @rm -f $(INSTALL_PREFIX)/lib/$(TARGET_LIB)
 
 
 
 clean:
-	@echo [CLEAN]
-	@rm -f $(OBJ)
+        @echo [CLEAN]
+        @rm -f $(OBJ)
 
 .PHONY: clean
 
 $(OBJ): $(BUILDDIR)/%.o : src/%.cpp
-	@echo [C++] $<
-	@$(COMPILE.cpp) $(OUTPUT_OPTION) $< 
-
+        @echo [C++] $<
+        $(COMPILE.cpp) $(CFLAGS) $(OUTPUT_OPTION) $< 
