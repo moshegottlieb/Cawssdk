@@ -15,6 +15,8 @@ if [ ! -d "${SRC_ROOT}" ]; then
 	fi
 fi
 
+SUDO=""
+
 if [ "${OS}" = "Darwin" ]; then
 	if [ "${UID}" != 0 ]; then
 		CHECK_DIRS=("${INSTALL_PREFIX}/include" "${INSTALL_PREFIX}/lib")
@@ -30,7 +32,8 @@ if [ "${OS}" = "Darwin" ]; then
 else
 	if [ "${UID}" != 0 ]; then
 		echo "Installation on non Darwin OS requires this script to be ran as root"
-		exit 1
+		echo "Will prompt later for credentials"
+		SUDO="sudo"
 	fi
 	JOBS=`grep -c ^processor /proc/cpuinfo`
 fi
@@ -44,7 +47,8 @@ if [ "$?" != 0 ]; then
 	exit $RET
 fi
 make -j ${JOBS} || exit $?
-make install || exit $?
+${SUDO} make install || exit $?
 cd ..
 make clean
-make -j ${JOBS} install
+make -j ${JOBS}
+${SUDO} make install

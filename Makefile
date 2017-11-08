@@ -14,6 +14,7 @@ OBJ = $(subst /src,,$(patsubst %.cpp,$(BUILDDIR)/%.o,$(SOURCES)))
 
 ifeq ($(UNAME_S),Linux)
 	SO_SUFFIX=so
+	CFLAGS:= $(CFLAGS) -fPIC
 	LDFLAGS:= $(LDFLAGS) -shared 
 endif
 ifeq ($(UNAME_S),Darwin)
