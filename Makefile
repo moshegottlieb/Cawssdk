@@ -32,7 +32,7 @@ TARGET_LIB=$(TGT_PREFIX)$(TGT_NAME).$(SO_SUFFIX)
 TARGET = $(BUILDDIR)/$(TARGET_LIB)
 
 $(TARGET): $(OBJ)
-        @echo [LINK] $(TARGET_LIB)
+		@echo [LINK] $(TARGET_LIB)
         @$(CXX) $(OBJ) -o $@ $(LDFLAGS) $(CFLAGS) $(CXXFLAGS)
 
 install: $(TARGET)
