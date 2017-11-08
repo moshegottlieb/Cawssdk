@@ -33,26 +33,25 @@ TARGET = $(BUILDDIR)/$(TARGET_LIB)
 
 $(TARGET): $(OBJ)
 		@echo [LINK] $(TARGET_LIB)
-        @$(CXX) $(OBJ) -o $@ $(LDFLAGS) $(CFLAGS) $(CXXFLAGS)
+		@$(CXX) $(OBJ) -o $@ $(LDFLAGS) $(CFLAGS) $(CXXFLAGS)
 
 install: $(TARGET)
-        @echo [INSTALL] 
-        @mkdir -p $(INSTALL_PREFIX)/include/$(TGT_NAME)
-        @cp include/*.h $(INSTALL_PREFIX)/include/$(TGT_NAME)/
-        @cp $(TARGET) $(INSTALL_PREFIX)/lib
+		@echo [INSTALL] 
+		@mkdir -p $(INSTALL_PREFIX)/include/$(TGT_NAME)
+		@cp include/*.h $(INSTALL_PREFIX)/include/$(TGT_NAME)/
+		@cp $(TARGET) $(INSTALL_PREFIX)/lib
+
 uninstall:
-        @echo [UNINSTALL]
-        @rm -rf $(INSTALL_PREFIX)/include/$(TGT_NAME)
-        @rm -f $(INSTALL_PREFIX)/lib/$(TARGET_LIB)
-
-
+		@echo [UNINSTALL]
+		@rm -rf $(INSTALL_PREFIX)/include/$(TGT_NAME)
+		@rm -f $(INSTALL_PREFIX)/lib/$(TARGET_LIB)
 
 clean:
-        @echo [CLEAN]
-        @rm -f $(OBJ)
+		@echo [CLEAN]
+		@rm -f $(OBJ)
 
 .PHONY: clean
 
 $(OBJ): $(BUILDDIR)/%.o : src/%.cpp
-        @echo [C++] $<
-        $(COMPILE.cpp) $(CFLAGS) $(OUTPUT_OPTION) $< 
+		@echo [C++] $<
+		$(COMPILE.cpp) $(CFLAGS) $(OUTPUT_OPTION) $< 
