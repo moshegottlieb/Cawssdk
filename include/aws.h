@@ -4,6 +4,14 @@
 extern "C" {
 #endif
 
+#ifdef __clang__
+#define PIM_NULLABLE _Nullable
+#define PIM_NONNULL _Nonnull
+#else // GCC or whatever
+#define PIM_NULLABLE
+#define PIM_NONNULL
+#endif
+
 
 
 typedef void* AWSObjectRef;

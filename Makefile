@@ -3,7 +3,6 @@ TGT_PREFIX = lib
 TGT_NAME = awscsdk
 UNAME_S := $(shell uname -s)
 CXXFLAGS+=-g -std=c++11 -Iinclude -I/usr/local/Iinclude
-LDFLAGS+=-L$(INSTALL_PREFIX)/lib
 BUILDDIR=build
 $(shell mkdir -p $(BUILDDIR) >/dev/null)
 
@@ -22,6 +21,8 @@ ifeq ($(UNAME_S),Darwin)
         LDFLAGS:= $(LDFLAGS) -dynamiclib
         INSTALL_PREFIX=/usr/local
 endif
+
+LDFLAGS+=-L$(INSTALL_PREFIX)/lib
 
 AWS_LIBS = $(wildcard $(INSTALL_PREFIX)/lib/libaws-cpp-sdk-*.$(SO_SUFFIX))
 AWS_LIBS := $(subst /usr/local/lib/lib,-l,$(AWS_LIBS))

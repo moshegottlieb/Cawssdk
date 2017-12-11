@@ -5,9 +5,9 @@ extern "C" {
 
 #include "aws.h"
 
-AWSObjectRef SESCreate(const char* region,const char* accessKeyId,const char* secretKey,AWSResult* result);
-void SESDestroy(AWSObjectRef object);
-AWSErrorPolicy SESSendEmail(AWSObjectRef object, const char* from, const char** to,int toCount,const char** cc,int ccCount,const char** bcc,int bccCount,const char* subject,const char* body,int isHtml,AWSResult* result);
+AWSObjectRef PIM_NONNULL SESCreate(const char* PIM_NONNULL region,const char* PIM_NONNULL accessKeyId,const char* PIM_NONNULL secretKey,AWSResult* PIM_NONNULL result);
+void SESDestroy(AWSObjectRef PIM_NONNULL object);
+AWSErrorPolicy SESSendEmail(AWSObjectRef PIM_NONNULL object, const char* PIM_NONNULL from, const char* PIM_NONNULL * PIM_NONNULL to,int toCount,const char* PIM_NONNULL * PIM_NULLABLE cc,int ccCount,const char* PIM_NONNULL * PIM_NULLABLE bcc,int bccCount,const char* PIM_NONNULL subject,const char* PIM_NONNULL body,int isHtml,AWSResult* PIM_NONNULL result);
 
 #ifdef __cplusplus
 }

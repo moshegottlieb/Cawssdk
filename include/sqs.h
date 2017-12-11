@@ -5,13 +5,13 @@ extern "C" {
 
 #include "aws.h"
 
-AWSObjectRef SQSCreate(const char* region,const char* accessKeyId,const char* secretKey,AWSResult* result);
-void SQSDestroy(AWSObjectRef object);
-AWSErrorPolicy SQSSendMessage(AWSObjectRef object, const char* queueUrl, const char* message,AWSResult* result);
+AWSObjectRef PIM_NONNULL SQSCreate(const char* PIM_NONNULL region,const char* PIM_NONNULL accessKeyId,const char* PIM_NONNULL secretKey,AWSResult* PIM_NONNULL result);
+void SQSDestroy(AWSObjectRef PIM_NONNULL  object);
+AWSErrorPolicy SQSSendMessage(AWSObjectRef PIM_NONNULL  object, const char* PIM_NONNULL queueUrl, const char* PIM_NONNULL message,AWSResult* PIM_NONNULL result);
 
-typedef int (*SQSMessageReceivedCallback)(void* ctx,const char* id,const char* message,const char* receipt);
-AWSErrorPolicy SQSReceiveMessages(AWSObjectRef object, const char* queueUrl,int maxBatch,int timeoutSeconds,void* context,SQSMessageReceivedCallback handler,AWSResult* result);
-AWSErrorPolicy SQSDeleteMessage(AWSObjectRef object,const char* queueUrl, const char* handle,AWSResult* result); 
+typedef int (*SQSMessageReceivedCallback)(void* PIM_NONNULL ctx,const char* PIM_NONNULL id,const char* PIM_NONNULL message,const char* PIM_NONNULL receipt);
+AWSErrorPolicy SQSReceiveMessages(AWSObjectRef PIM_NONNULL object, const char* PIM_NONNULL queueUrl,int maxBatch,int timeoutSeconds,void* PIM_NONNULL context,SQSMessageReceivedCallback PIM_NONNULL handler,AWSResult* PIM_NONNULL result);
+AWSErrorPolicy SQSDeleteMessage(AWSObjectRef PIM_NONNULL object,const char* PIM_NONNULL queueUrl, const char* PIM_NONNULL handle,AWSResult* PIM_NONNULL result); 
 
 
 #ifdef __cplusplus

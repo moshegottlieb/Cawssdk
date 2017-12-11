@@ -6,25 +6,25 @@ extern "C" {
 
 #include "aws.h"
 
-AWSObjectRef S3ObjectCreate(const char* region,const char* accessKeyId,const char* secretKey,AWSResult* result);
-void S3ObjectDestroy(AWSObjectRef object);
+AWSObjectRef PIM_NONNULL S3ObjectCreate(const char* PIM_NONNULL region,const char* PIM_NONNULL accessKeyId,const char* PIM_NONNULL secretKey,AWSResult* PIM_NONNULL result);
+void S3ObjectDestroy(AWSObjectRef PIM_NONNULL object);
 
 typedef struct S3ObjectDesc {
-    char* acl;
-    char* storageClass;
-    char* cacheControl;
-    char* contentType;
+    char* PIM_NULLABLE acl;
+    char* PIM_NULLABLE storageClass;
+    char* PIM_NULLABLE cacheControl;
+    char* PIM_NULLABLE contentType;
 } S3ObjectDesc;
 
-S3ObjectDesc* S3ObjectDescCreate();
-void S3ObjectDescDestroy(S3ObjectDesc* od);
+S3ObjectDesc* PIM_NONNULL S3ObjectDescCreate();
+void S3ObjectDescDestroy(S3ObjectDesc* PIM_NONNULL od);
 
-void S3ObjectDescSetACL(S3ObjectDesc* object, const char* value);
-void S3ObjectDescSetStorageClass(S3ObjectDesc* object, const char* value);
-void S3ObjectDescSetCacheControl(S3ObjectDesc* object, const char* value);
-void S3ObjectDescSetContentType(S3ObjectDesc* object, const char* value);
+void S3ObjectDescSetACL(S3ObjectDesc* PIM_NONNULL object, const char* PIM_NONNULL value);
+void S3ObjectDescSetStorageClass(S3ObjectDesc* PIM_NONNULL object, const char* PIM_NONNULL value);
+void S3ObjectDescSetCacheControl(S3ObjectDesc* PIM_NONNULL object, const char* PIM_NONNULL value);
+void S3ObjectDescSetContentType(S3ObjectDesc* PIM_NONNULL object, const char* PIM_NONNULL value);
 
-AWSErrorPolicy S3ObjectPut(AWSObjectRef object,const char* filename,const char* bucket,const char* key, S3ObjectDesc* desc,AWSResult* result);
+AWSErrorPolicy S3ObjectPut(AWSObjectRef PIM_NONNULL object,const char* PIM_NONNULL filename,const char* PIM_NONNULL bucket,const char* PIM_NONNULL key, S3ObjectDesc* PIM_NONNULL desc,AWSResult* PIM_NONNULL result);
 
 #ifdef __cplusplus
 }
