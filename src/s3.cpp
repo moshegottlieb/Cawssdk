@@ -48,16 +48,18 @@ extern "C" AWSErrorPolicy S3ObjectPut(AWSObjectRef object,const char* filename,c
     S3Client& s3 = aws_ref<S3Client>(object);
     Model::PutObjectRequest object_request;
     object_request.WithBucket(bucket).WithKey(key);
-    if (desc->acl[0]){
+    if (desc->acl && desc->acl[0]){
         object_request.SetACL(Model::ObjectCannedACLMapper::GetObjectCannedACLForName(desc->acl));
     }
-    if (desc->storageClass[0]){
+    if (desc->storageClass && desc->storageClass[0]){
         object_request.SetStorageClass(Model::StorageClassMapper::GetStorageClassForName(desc->storageClass));
     }
-    if (desc->cacheControl[0]){
+    if (desc->cacheControl && desc->cacheControl[0]){
         object_request.SetCacheControl(desc->cacheControl);
     }
-    object_request.SetContentType("image/png");
+    if (desc->contentType && desc->contentType[0]){
+        object_request.SetContentType(desc->contentType);
+    }
     // Binary files must also have the std::ios_base::bin flag or'ed in
     auto input_data = Aws::MakeShared<Aws::FStream>("PutObjectInputStream",
         filename, std::ios_base::in | std::ios_base::binary);
