@@ -10,16 +10,15 @@ SOURCES = $(wildcard src/*.cpp)
 
 OBJ = $(subst /src,,$(patsubst %.cpp,$(BUILDDIR)/%.o,$(SOURCES)))
 
+INSTALL_PREFIX=/usr/local
 ifeq ($(UNAME_S),Linux)
         SO_SUFFIX=so
         CFLAGS:= $(CFLAGS) -fPIC
         LDFLAGS:= $(LDFLAGS) -shared 
-        INSTALL_PREFIX=/usr
 endif
 ifeq ($(UNAME_S),Darwin)
         SO_SUFFIX=dylib
         LDFLAGS:= $(LDFLAGS) -dynamiclib
-        INSTALL_PREFIX=/usr/local
 endif
 
 LDFLAGS+=-L$(INSTALL_PREFIX)/lib
