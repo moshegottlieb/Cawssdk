@@ -6,15 +6,6 @@ INSTALL_PREFIX="/usr/local"
 SRC_ROOT="${PWD}/aws-sdk-cpp"
 AWS_TARGETS="s3;sqs;email"
 
-if [ ! -d "${SRC_ROOT}" ]; then
-	git clone --branch "${AWS_CPP_VERSION}" https://github.com/aws/aws-sdk-cpp.git "${SRC_ROOT}"
-	RET=$?
-	if [ $RET != 0 ]; then
-		rm -rf "${SRC_ROOT}"
-		exit $RET
-	fi
-fi
-
 SUDO=""
 
 if [ "${OS}" = "Darwin" ]; then
@@ -38,17 +29,39 @@ else
 	JOBS=`grep -c ^processor /proc/cpuinfo`
 fi
 
-mkdir -p "${BUILD_DIR}" || exit $?
-cd "${BUILD_DIR}" || exit $?
-cmake -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DENABLE_TESTING=OFF -DBUILD_ONLY="${AWS_TARGETS}" "${SRC_ROOT}"
-RET=$?
-if [ "$?" != 0 ]; then
-	rm -rf "${BUILD_DIR}"
-	exit $RET
+NEED_AWS_SDK=1
+make check_awssdk &> /dev/null
+if [ $? = 0 ]; then
+	CURRENT_AWS_CPP_VERSION=`build/check_awssdk`
+	if [ "${CURRENT_AWS_CPP_VERSION}" = "${AWS_CPP_VERSION}" ]; then
+		echo "AWS SDK already at version ${AWS_CPP_VERSION}, skipping download/build."
+		NEED_AWS_SDK=0
+	fi
 fi
-make -j ${JOBS} || exit $?
-${SUDO} make install || exit $?
-cd ..
+
+
+if [ $NEED_AWS_SDK = 1 ]; then
+	if [ ! -d "${SRC_ROOT}" ]; then
+		git clone --branch "${AWS_CPP_VERSION}" https://github.com/aws/aws-sdk-cpp.git "${SRC_ROOT}"
+		RET=$?
+		if [ $RET != 0 ]; then
+			rm -rf "${SRC_ROOT}"
+			exit $RET
+		fi
+	fi
+	mkdir -p "${BUILD_DIR}" || exit $?
+	cd "${BUILD_DIR}" || exit $?
+	cmake -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DENABLE_TESTING=OFF -DBUILD_ONLY="${AWS_TARGETS}" "${SRC_ROOT}"
+	RET=$?
+	if [ "$?" != 0 ]; then
+		rm -rf "${BUILD_DIR}"
+		exit $RET
+	fi
+	make -j ${JOBS} || exit $?
+	${SUDO} make install || exit $?
+	cd ..
+fi
+
 make clean
 make -j ${JOBS}
 ${SUDO} make install

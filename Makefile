@@ -13,11 +13,11 @@ INSTALL_PREFIX=/usr/local
 ifeq ($(UNAME_S),Linux)
 	SO_SUFFIX=so
 	CFLAGS:= $(CFLAGS) -fPIC
-	LDFLAGS:= $(LDFLAGS) -shared 
+	LIB_LDFLAGS=-shared 
 endif
 ifeq ($(UNAME_S),Darwin)
 	SO_SUFFIX=dylib
-	LDFLAGS:= $(LDFLAGS) -dynamiclib
+	LIB_LDFLAGS=-dynamiclib
 endif
 
 LDFLAGS+=-L$(INSTALL_PREFIX)/lib
@@ -33,7 +33,11 @@ TARGET = $(BUILDDIR)/$(TARGET_LIB)
 $(TARGET): $(OBJ)
 	echo $(AWS_LIBS)
 	@echo [LINK] $(TARGET_LIB)
-	$(CXX) $(OBJ) -o $@ $(LDFLAGS) $(CFLAGS) $(CXXFLAGS)
+	@$(CXX) $(OBJ) -o $@ $(LDFLAGS) $(CFLAGS) $(CXXFLAGS) $(LIB_LDFLAGS)
+
+check_awssdk:
+	@echo [CHECK AWS_SDK]
+	@$(CXX) check_awssdk.cpp $(LDFLAGS) $(CFLAGS) $(CXXFLAGS) -o $(BUILDDIR)/$@
 
 install: $(TARGET)
 	@echo [INSTALL] 
@@ -50,7 +54,7 @@ clean:
 	@echo [CLEAN]
 	@rm -f $(OBJ)
 
-.PHONY: clean
+.PHONY: clean check_awssdk
 
 $(OBJ): $(BUILDDIR)/%.o : src/%.cpp
 	@echo [C++] $<
