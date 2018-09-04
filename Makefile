@@ -9,16 +9,15 @@ $(shell mkdir -p $(BUILDDIR) >/dev/null)
 SOURCES = $(wildcard src/*.cpp)
 
 OBJ = $(subst /src,,$(patsubst %.cpp,$(BUILDDIR)/%.o,$(SOURCES)))
-
 INSTALL_PREFIX=/usr/local
 ifeq ($(UNAME_S),Linux)
-        SO_SUFFIX=so
-        CFLAGS:= $(CFLAGS) -fPIC
-        LDFLAGS:= $(LDFLAGS) -shared 
+	SO_SUFFIX=so
+	CFLAGS:= $(CFLAGS) -fPIC
+	LDFLAGS:= $(LDFLAGS) -shared 
 endif
 ifeq ($(UNAME_S),Darwin)
-        SO_SUFFIX=dylib
-        LDFLAGS:= $(LDFLAGS) -dynamiclib
+	SO_SUFFIX=dylib
+	LDFLAGS:= $(LDFLAGS) -dynamiclib
 endif
 
 LDFLAGS+=-L$(INSTALL_PREFIX)/lib
@@ -32,26 +31,27 @@ TARGET_LIB=$(TGT_PREFIX)$(TGT_NAME).$(SO_SUFFIX)
 TARGET = $(BUILDDIR)/$(TARGET_LIB)
 
 $(TARGET): $(OBJ)
-		@echo [LINK] $(TARGET_LIB)
-		@$(CXX) $(OBJ) -o $@ $(LDFLAGS) $(CFLAGS) $(CXXFLAGS)
+	echo $(AWS_LIBS)
+	@echo [LINK] $(TARGET_LIB)
+	$(CXX) $(OBJ) -o $@ $(LDFLAGS) $(CFLAGS) $(CXXFLAGS)
 
 install: $(TARGET)
-		@echo [INSTALL] 
-		@mkdir -p $(INSTALL_PREFIX)/include/$(TGT_NAME)
-		@cp include/*.h $(INSTALL_PREFIX)/include/$(TGT_NAME)/
-		@cp $(TARGET) $(INSTALL_PREFIX)/lib
+	@echo [INSTALL] 
+	@mkdir -p $(INSTALL_PREFIX)/include/$(TGT_NAME)
+	@cp include/*.h $(INSTALL_PREFIX)/include/$(TGT_NAME)/
+	@cp $(TARGET) $(INSTALL_PREFIX)/lib
 
 uninstall:
-		@echo [UNINSTALL]
-		@rm -rf $(INSTALL_PREFIX)/include/$(TGT_NAME)
-		@rm -f $(INSTALL_PREFIX)/lib/$(TARGET_LIB)
+	@echo [UNINSTALL]
+	@rm -rf $(INSTALL_PREFIX)/include/$(TGT_NAME)
+	@rm -f $(INSTALL_PREFIX)/lib/$(TARGET_LIB)
 
 clean:
-		@echo [CLEAN]
-		@rm -f $(OBJ)
+	@echo [CLEAN]
+	@rm -f $(OBJ)
 
 .PHONY: clean
 
 $(OBJ): $(BUILDDIR)/%.o : src/%.cpp
-		@echo [C++] $<
-		@$(COMPILE.cpp) $(CFLAGS) $(OUTPUT_OPTION) $< 
+	@echo [C++] $<
+	@$(COMPILE.cpp) $(CFLAGS) $(OUTPUT_OPTION) $< 
