@@ -41,33 +41,32 @@ extern "C" AWSErrorPolicy SQSDeleteMessage(AWSObjectRef object,const char* queue
     return aws_result_assign_outcome(*result,outcome).policy;
 }
 
-extern "C" AWSErrorPolicy SQSReceiveMessages(AWSObjectRef object, const char* queueUrl,int maxBatch,int timeout,void* context,SQSMessageReceivedCallback handler,AWSResult* result){
+extern "C" void SQSReceiveMessages(AWSObjectRef object, const char* queueUrl,int maxBatch,int timeout,void* context,SQSMessageReceivedCallback handler,AWSResult* result){
     assert(result);
     SQSClient& sqs = aws_ref<SQSClient>(object);
     Model::ReceiveMessageRequest request;
     request.SetQueueUrl(queueUrl);
     request.SetMaxNumberOfMessages(maxBatch);
     request.SetWaitTimeSeconds(timeout);
-    auto should_continue = true;
+    bool should_continue;
     do {
         auto outcome = sqs.ReceiveMessage(request);
-        if (aws_result_assign_outcome(*result,outcome).policy == SUCCESS){
+        auto policy = aws_result_assign_outcome(*result,outcome).policy;
+        if (policy == SUCCESS) {
+            should_continue = true; // In case we got zero messages
             for (auto message:outcome.GetResult().GetMessages()){
                 auto id = message.GetMessageId();
                 auto body = message.GetBody();
                 auto receipt = message.GetReceiptHandle();
-                if (!(should_continue = handler(context,id.c_str(),body.c_str(),receipt.c_str()))){
+                if (!(should_continue = handler(context,policy,id.c_str(),body.c_str(),receipt.c_str()))){
                     break;
                 }                
             }
-
         } else {
-            should_continue = false;
+            should_continue = handler(context,policy,nullptr,nullptr,nullptr);
         }
     } while (should_continue);
-    return result->policy;
 }
-
 
 extern "C" void SQSDestroy(AWSObjectRef object){
     SQSClient& sqs = aws_ref<SQSClient>(object);
