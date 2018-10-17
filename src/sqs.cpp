@@ -53,8 +53,8 @@ extern "C" void SQSReceiveMessages(AWSObjectRef object, const char* queueUrl,int
         auto outcome = sqs.ReceiveMessage(request);
         auto policy = aws_result_assign_outcome(*result,outcome).policy;
         if (policy == SUCCESS) {
-            should_continue = true; // In case we got zero messages
-            for (auto message:outcome.GetResult().GetMessages()){
+            auto messages = outcome.GetResult().GetMessages();
+            for (auto message:messages){
                 auto id = message.GetMessageId();
                 auto body = message.GetBody();
                 auto receipt = message.GetReceiptHandle();
@@ -62,9 +62,9 @@ extern "C" void SQSReceiveMessages(AWSObjectRef object, const char* queueUrl,int
                     break;
                 }                
             }
-        } else {
-            should_continue = handler(context,policy,nullptr,nullptr,nullptr);
         }
+        // Always perform a last call to check if the queue should continue or stop
+        should_continue = handler(context,policy,nullptr,nullptr,nullptr);
     } while (should_continue);
 }
 
