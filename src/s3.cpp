@@ -38,6 +38,19 @@ extern "C" void S3ObjectDescDestroy(S3ObjectDesc* od){
     }
 }
 
+extern "C" AWSErrorPolicy S3ObjectDelete(AWSObjectRef object,const char* bucket,const char* key,AWSResult* result){
+    assert(object);
+    assert(result);
+    assert(bucket);
+    assert(key);
+
+    S3Client& s3 = aws_ref<S3Client>(object);
+    Model::DeleteObjectRequest object_request;
+    object_request.WithBucket(bucket).WithKey(key);
+    auto outcome = s3.DeleteObject(object_request);
+    return aws_result_assign_outcome(*result,outcome).policy;
+}
+
 extern "C" AWSErrorPolicy S3ObjectPut(AWSObjectRef object,const char* filename,const char* bucket,const char* key, S3ObjectDesc* desc,AWSResult* result){
     assert(object);
     assert(desc);
@@ -65,16 +78,6 @@ extern "C" AWSErrorPolicy S3ObjectPut(AWSObjectRef object,const char* filename,c
         filename, std::ios_base::in | std::ios_base::binary);
     object_request.SetBody(input_data);
     auto outcome = s3.PutObject(object_request);
-    return aws_result_assign_outcome(*result,outcome).policy;
-}
-
-extern "C" AWSErrorPolicy S3ObjectDelete(AWSObjectRef object,const char* bucket,const char* key,AWSResult* result){
-    assert(object);
-    assert(result);
-    S3Client& s3 = aws_ref<S3Client>(object);
-    Model::DeleteObjectRequest delete_request;
-    delete_request.WithBucket(bucket).WithKey(key);
-    auto outcome = s3.DeleteObject(delete_request);
     return aws_result_assign_outcome(*result,outcome).policy;
 }
 

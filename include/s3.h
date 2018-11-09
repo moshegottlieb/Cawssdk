@@ -25,6 +25,7 @@ void S3ObjectDescSetCacheControl(S3ObjectDesc* PIM_NONNULL object, const char* P
 void S3ObjectDescSetContentType(S3ObjectDesc* PIM_NONNULL object, const char* PIM_NONNULL value);
 
 AWSErrorPolicy S3ObjectPut(AWSObjectRef PIM_NONNULL object,const char* PIM_NONNULL filename,const char* PIM_NONNULL bucket,const char* PIM_NONNULL key, S3ObjectDesc* PIM_NONNULL desc,AWSResult* PIM_NONNULL result);
+AWSErrorPolicy S3ObjectDelete(AWSObjectRef PIM_NONNULL object,const char* PIM_NONNULL bucket,const char* PIM_NONNULL key,AWSResult* PIM_NONNULL result);
 
 #ifdef __cplusplus
 }
