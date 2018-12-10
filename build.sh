@@ -1,5 +1,5 @@
 #!/bin/bash
-AWS_CPP_VERSION="1.2.25"
+AWS_CPP_VERSION="1.7.16"
 OS=`uname -s`
 BUILD_DIR="aws-sdk-cpp.build"
 INSTALL_PREFIX="/usr/local"
