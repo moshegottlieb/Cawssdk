@@ -1,5 +1,4 @@
 #!/bin/bash
-AWS_CPP_VERSION="1.7.16"
 OS=`uname -s`
 BUILD_DIR="aws-sdk-cpp.build"
 INSTALL_PREFIX="/usr/local"
@@ -9,6 +8,7 @@ AWS_TARGETS="s3;sqs;email"
 SUDO=""
 
 if [ "${OS}" = "Darwin" ]; then
+    AWS_CPP_VERSION="1.7.16"
 	if [ "${UID}" != 0 ]; then
 		CHECK_DIRS=("${INSTALL_PREFIX}/include" "${INSTALL_PREFIX}/lib")
 		for D in "${CHECK_DIRS[@]}"; do
@@ -21,10 +21,10 @@ if [ "${OS}" = "Darwin" ]; then
 	fi
 	JOBS=`sysctl -n hw.logicalcpu_max`
 else
+    AWS_CPP_VERSION="1.2.25"
 	if [ "${UID}" != 0 ]; then
-		echo "Installation on non Darwin OS requires this script to be ran as root"
-		echo "Will prompt later for credentials"
-		SUDO="sudo"
+		sudo $0
+		exit
 	fi
 	JOBS=`grep -c ^processor /proc/cpuinfo`
 fi
@@ -58,10 +58,10 @@ if [ $NEED_AWS_SDK = 1 ]; then
 		exit $RET
 	fi
 	make -j ${JOBS} || exit $?
-	${SUDO} make install || exit $?
+	make install || exit $?
 	cd ..
 fi
 
 make clean
 make -j ${JOBS}
-${SUDO} make install
+make install || exit $?
