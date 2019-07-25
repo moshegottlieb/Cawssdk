@@ -53,6 +53,7 @@ extern "C" AWSErrorPolicy SESSendEmail(AWSObjectRef object, const char* from, co
         std::function<void(const char*)> add;
     } addr;
 
+    // Create address helpers
     addr a[] = {
         { to, toCount , [&destination](const char* addr){
             destination.AddToAddresses(addr);
@@ -65,12 +66,15 @@ extern "C" AWSErrorPolicy SESSendEmail(AWSObjectRef object, const char* from, co
         }}
     };
 
+    // Run address helpers
     for (auto address:a){
         for (int i=0;i<address.count;++i){
             address.add(address.addr[i]);
         }
     }
-
+    
+    request.SetDestination(destination);
+    
     auto outcome = ses.SendEmail(request);
     return aws_result_assign_outcome(*result,outcome).policy;
 }

@@ -2,7 +2,8 @@ SRCDIR = src
 TGT_PREFIX = lib
 TGT_NAME = awscsdk
 UNAME_S := $(shell uname -s)
-CXXFLAGS+=-g -std=c++11 -Iinclude -I/usr/local/Iinclude
+CFLAGS+=-g
+CXXFLAGS+=-std=c++11 -Iinclude -I/usr/local/Iinclude
 BUILDDIR=build
 $(shell mkdir -p $(BUILDDIR) >/dev/null)
 
@@ -31,7 +32,6 @@ TARGET_LIB=$(TGT_PREFIX)$(TGT_NAME).$(SO_SUFFIX)
 TARGET = $(BUILDDIR)/$(TARGET_LIB)
 
 $(TARGET): $(OBJ)
-	echo $(AWS_LIBS)
 	@echo [LINK] $(TARGET_LIB)
 	@$(CXX) $(OBJ) -o $@ $(LDFLAGS) $(CFLAGS) $(CXXFLAGS) $(LIB_LDFLAGS)
 
