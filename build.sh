@@ -8,7 +8,7 @@ AWS_TARGETS="s3;sqs;email"
 SUDO=""
 
 if [ "${OS}" = "Darwin" ]; then
-    AWS_CPP_VERSION="1.7.16"
+    AWS_CPP_VERSION="1.7.218"
 	if [ "${UID}" != 0 ]; then
 		CHECK_DIRS=("${INSTALL_PREFIX}/include" "${INSTALL_PREFIX}/lib")
 		for D in "${CHECK_DIRS[@]}"; do
@@ -21,7 +21,7 @@ if [ "${OS}" = "Darwin" ]; then
 	fi
 	JOBS=`sysctl -n hw.logicalcpu_max`
 else
-    AWS_CPP_VERSION="1.2.25"
+    AWS_CPP_VERSION="1.7.218"
 	if [ "${UID}" != 0 ]; then
 		sudo $0
 		exit
